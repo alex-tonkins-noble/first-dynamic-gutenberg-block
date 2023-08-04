@@ -1,17 +1,17 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
-	"name": "custom-block/custom-block-boilerplate",
+	"name": "custom-block/first-dynamic-gutenberg-block",
 	"version": "1.0.0",
-	"title": "Custom Block Boilerplate",
+	"title": "First Dynamic Gutenberg Block",
 	"category": "widgets",
-	"icon": "admin-users",
-	"description": "Boilerplate Block ready for customising.",
-	"keywords": [""],
+	"icon": "admin-page",
+	"description": "Desc to go here. Dynamic!",
+	"keywords": ["latest", "posts", "dynamic"],
 	"supports": {
 		"html": false
 	},
-	"textdomain": "custom-block-boilerplate",
+	"textdomain": "first-dynamic-gutenberg-block",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
 	"style": "file:./style-index.css"
