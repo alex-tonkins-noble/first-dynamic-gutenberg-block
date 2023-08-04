@@ -14,5 +14,15 @@
 	"textdomain": "first-dynamic-gutenberg-block",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
-	"style": "file:./style-index.css"
+	"style": "file:./style-index.css",
+	"attributes": {
+		"numberOfPosts": {
+			"type": "number",
+			"default": 4
+		},
+		"displayFeaturedImage": {
+			"type": "boolean",
+			"default": true
+		}
+	}
 }
