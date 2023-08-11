@@ -1,3 +1,60 @@
+@use './styles/variables' as *;
+@use './styles/mixins' as mxn;
+
 .wp-block-custom-block-first-dynamic-gutenberg-block {
-	
+	img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+.wp-block-custom-block-first-dynamic-gutenberg-block__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    @include mxn.initiate-row();
+
+    @each $column, $sizes in $columns {
+        &.has-column-layout-#{$column} {
+            @each $size, $value in $sizes {
+                $breakpoint: map-get($grid-breakpoints, $size);
+
+                @if $breakpoint {
+                    @media (min-width: $breakpoint) {
+                        .wp-block-custom-block-first-dynamic-gutenberg-block__post {
+                            flex: 0 0 $value;
+                            max-width: $value;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.wp-block-custom-block-first-dynamic-gutenberg-block__post {
+    a {
+        text-decoration: none;
+    }
+
+    .post-thumbnail {
+        img {
+            display: block;
+            width: 100%;
+        }
+    }
+
+    .post-content {
+        padding: 15px;
+        border: 2px solid #ddd;
+        border-top: 0;
+        
+        > * {
+            margin: 0 0 15px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
 }

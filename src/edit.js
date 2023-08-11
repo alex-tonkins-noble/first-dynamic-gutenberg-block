@@ -36,7 +36,7 @@ export default function Edit({ attributes }) {
 		<div {...useBlockProps()}>
 			<h2>{__('My Posts Block', 'my-plugin')}</h2>
 			{posts && (
-				<ul>
+				<ul className="wp-block-custom-block-first-dynamic-gutenberg-block__list has-column-layout-2">
 					{posts.map((post) => {
 						// Get the featured image object
 						const featuredImg =
@@ -45,7 +45,10 @@ export default function Edit({ attributes }) {
 							post._embedded['wp:featuredmedia'][0];
 
 						return (
-							<li key={post.id} data-test="test">
+							<li
+								key={post.id}
+								className="wp-block-custom-block-first-dynamic-gutenberg-block__post"
+							>
 								<a href={post.link}>
 									{displayFeaturedImage && featuredImg && (
 										<div className="post-thumbnail">
@@ -58,37 +61,39 @@ export default function Edit({ attributes }) {
 											/>
 										</div>
 									)}
-									{post.title && (
-										<h5>
-											<RawHTML>
-												{post.title.rendered}
-											</RawHTML>
-										</h5>
-									)}
-									{post.date_gmt && (
-										<p className="post-date">
-											<time
-												dateTime={format(
-													'c',
-													post.date_gmt
-												)}
-											>
-												{/* getDateSettings gets the date and time formats, set in the admin, for us to use */}
-												{dateI18n(
-													getDateSettings().formats
-														.date,
-													post.date_gmt
-												)}
-											</time>
-										</p>
-									)}
-									{post.excerpt && (
-										<div className="post-excerpt">
-											<RawHTML>
-												{post.excerpt.rendered}
-											</RawHTML>
-										</div>
-									)}
+									<div className="post-content">
+										{post.title && (
+											<h3>
+												<RawHTML>
+													{post.title.rendered}
+												</RawHTML>
+											</h3>
+										)}
+										{post.date_gmt && (
+											<p className="post-date">
+												<time
+													dateTime={format(
+														'c',
+														post.date_gmt
+													)}
+												>
+													{/* getDateSettings gets the date and time formats, set in the admin, for us to use */}
+													{dateI18n(
+														getDateSettings()
+															.formats.date,
+														post.date_gmt
+													)}
+												</time>
+											</p>
+										)}
+										{post.excerpt && (
+											<div className="post-excerpt">
+												<RawHTML>
+													{post.excerpt.rendered}
+												</RawHTML>
+											</div>
+										)}
+									</div>
 								</a>
 							</li>
 						);
