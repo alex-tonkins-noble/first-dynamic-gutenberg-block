@@ -20,5 +20,9 @@
 		"@wordpress/scripts": "^26.5.0",
 		"eslint-config-prettier": "^8.10.0"
 	},
-	"prettier": "@wordpress/prettier-config"
+	"prettier": "@wordpress/prettier-config",
+	"dependencies": {
+		"@wordpress/date": "^4.38.0",
+		"@wordpress/element": "^5.15.0"
+	}
 }

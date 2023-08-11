@@ -35,17 +35,17 @@ function blocks_course_render_frontend($attributes) {
 
 	// print_r(($posts));
 
-    $output = '';
+    $output = '<div ' . get_block_wrapper_attributes() . '>';
 
     if ($posts) {
-		$output .= '<ul ' . get_block_wrapper_attributes() . '>';
+		$output .= '<ul>';
 
 		foreach ($posts as $key => $post) {
 			$id = $post->ID;
 			$title = $post->post_title;
-			$excerpt = $post->post_excerpt;
+			$excerpt = get_the_excerpt($post);
 			$permalink = get_permalink($id);
-			$date = get_the_date('F j, Y', $id); // Get the post date
+			$date = get_the_date(get_option('date_format'), $id); // Get the post date
 			$thumbnail = get_the_post_thumbnail($id, 'full'); // Get the post thumbnail (image)
 		
 			$output .= '<li>';
@@ -60,7 +60,7 @@ function blocks_course_render_frontend($attributes) {
 			}
 			
 			if ($date) {
-				$output .= '<p class="post-date">' . $date . '</p>'; // Display the post date
+				$output .= '<time class="post-date" datetime="'. esc_attr(get_the_date('c', $post)) .'">'. esc_attr(get_the_date('', $post)) .'</time>'; // Display the post date
 			}
 			
 			if ($excerpt) {
@@ -74,6 +74,7 @@ function blocks_course_render_frontend($attributes) {
 		$output .= '</ul>';
 		
     }
+	$output .= '</div>';
 
     return $output;
 };
