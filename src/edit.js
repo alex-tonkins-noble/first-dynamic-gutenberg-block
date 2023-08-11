@@ -1,6 +1,12 @@
 import './editor.scss';
 import { __ } from '@wordpress/i18n';
-import { useBlockProps } from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import {
+	PanelBody,
+	RangeControl,
+	ToggleControl,
+	QueryControls,
+} from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 
 // RawHTML allows the passing of HTML content within the data.
@@ -13,14 +19,22 @@ import {
 	getSettings as getDateSettings,
 } from '@wordpress/date';
 
-export default function Edit({ attributes }) {
-	const { numberOfPosts, displayFeaturedImage } = attributes;
+export default function Edit({ attributes, setAttributes }) {
+	const {
+		numberOfPosts,
+		displayFeaturedImage,
+		numberOfColumns,
+		order,
+		orderBy,
+	} = attributes;
 
 	// The _embed parameter is CRUCIAL here. It will allow getEntityRecords to pass through content in an _embedded object for us to use. (EG - featuredImage)
 	const args = {
 		per_page: numberOfPosts,
 		status: 'publish',
 		_embed: true,
+		order,
+		orderby: orderBy,
 	};
 
 	// use getEntityRecords from the 'core' data store to retrieve post data specified via the args variable.
@@ -29,14 +43,64 @@ export default function Edit({ attributes }) {
 			const { getEntityRecords } = select('core');
 			return getEntityRecords('postType', 'post', args);
 		},
-		[numberOfPosts]
+		[numberOfPosts, order, orderBy]
 	);
+
+	console.log(order);
+	console.log(orderBy);
 
 	return (
 		<div {...useBlockProps()}>
-			<h2>{__('My Posts Block', 'my-plugin')}</h2>
+			<InspectorControls>
+				<PanelBody
+					title={__('Settings', 'first-dynamic-gutenberg-block')}
+				>
+					<RangeControl
+						label={__('Columns', 'first-dynamic-gutenberg-block')}
+						value={numberOfColumns}
+						onChange={(value) =>
+							setAttributes({ numberOfColumns: value })
+						}
+						min={1}
+						max={4}
+					/>
+					<ToggleControl
+						label={__(
+							'Display Featured Image',
+							'first-dynamic-gutenberg-block'
+						)}
+						checked={displayFeaturedImage}
+						onChange={() =>
+							setAttributes({
+								displayFeaturedImage: !displayFeaturedImage,
+							})
+						}
+					/>
+
+					{/* This updates the posts absolutely fine, but the wording does not update... weird. */}
+					<QueryControls
+						numberOfItems={numberOfPosts}
+						onNumberOfItemsChange={(newNumber) =>
+							setAttributes({ numberOfPosts: newNumber })
+						}
+						minItems={2}
+						maxItems={12}
+						orderby={orderBy}
+						onOrderByChange={(newOrderBy) =>
+							setAttributes({ orderBy: newOrderBy })
+						}
+						order={order}
+						onOrderChange={(newOrder) =>
+							setAttributes({ order: newOrder })
+						}
+					/>
+				</PanelBody>
+			</InspectorControls>
+
 			{posts && (
-				<ul className="wp-block-custom-block-first-dynamic-gutenberg-block__list has-column-layout-2">
+				<ul
+					className={`wp-block-custom-block-first-dynamic-gutenberg-block__list has-column-layout-${numberOfColumns}`}
+				>
 					{posts.map((post) => {
 						// Get the featured image object
 						const featuredImg =
@@ -52,6 +116,7 @@ export default function Edit({ attributes }) {
 								<a href={post.link}>
 									{displayFeaturedImage && featuredImg && (
 										<div className="post-thumbnail">
+											<p>asdas fasfa sfasfa</p>
 											<img
 												src={
 													featuredImg.media_details

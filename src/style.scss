@@ -35,9 +35,12 @@
 .wp-block-custom-block-first-dynamic-gutenberg-block__post {
     a {
         text-decoration: none;
+        display: block;
     }
 
     .post-thumbnail {
+        margin-bottom: -2px;
+        
         img {
             display: block;
             width: 100%;
@@ -47,7 +50,6 @@
     .post-content {
         padding: 15px;
         border: 2px solid #ddd;
-        border-top: 0;
         
         > * {
             margin: 0 0 15px;

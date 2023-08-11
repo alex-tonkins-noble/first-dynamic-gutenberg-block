@@ -23,22 +23,28 @@
  */
 
 function blocks_course_render_frontend($attributes) {
+	// Args
+	$number_of_posts = $attributes['numberOfPosts'];
+	$order_of_posts = $attributes['order'];
+	$orderby = $attributes['orderBy'];
+
 	$display_image = $attributes['displayFeaturedImage'];
+	$number_of_columns = $attributes['numberOfColumns'];
 
 	$query_args = [
-		'posts_per_page' => $attributes['numberOfPosts'],
-		'post_status' => 'publish'
+		'posts_per_page' => $number_of_posts,
+		'post_status' => 'publish',
+		'order' => $order_of_posts,
+		'orderby' => $orderby
 	];
 
 	$query = new WP_Query($query_args);
 	$posts = $query->posts;
 
-	// print_r(($posts));
-
     $output = '<div ' . get_block_wrapper_attributes() . '>';
 
     if ($posts) {
-		$output .= '<ul class="wp-block-custom-block-first-dynamic-gutenberg-block__list has-column-layout-2">';
+		$output .= '<ul class="wp-block-custom-block-first-dynamic-gutenberg-block__list has-column-layout-'.$number_of_columns.'">';
 
 		foreach ($posts as $key => $post) {
 			$id = $post->ID;
