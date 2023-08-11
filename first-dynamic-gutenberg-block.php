@@ -38,7 +38,7 @@ function blocks_course_render_frontend($attributes) {
     $output = '<div ' . get_block_wrapper_attributes() . '>';
 
     if ($posts) {
-		$output .= '<ul>';
+		$output .= '<ul class="wp-block-custom-block-first-dynamic-gutenberg-block__list has-column-layout-2">';
 
 		foreach ($posts as $key => $post) {
 			$id = $post->ID;
@@ -48,25 +48,27 @@ function blocks_course_render_frontend($attributes) {
 			$date = get_the_date(get_option('date_format'), $id); // Get the post date
 			$thumbnail = get_the_post_thumbnail($id, 'full'); // Get the post thumbnail (image)
 		
-			$output .= '<li>';
+			$output .= '<li class="wp-block-custom-block-first-dynamic-gutenberg-block__post">';
 			$output .= '<a href="' . esc_url($permalink) . '">';
 			
-			if ($thumbnail && $display_image) {
-				$output .= '<div class="post-thumbnail">' . $thumbnail . '</div>'; // Display the thumbnail
-			}
-			
-			if ($title) {
-				$output .= '<h5>' . $title . '</h5>';
-			}
-			
-			if ($date) {
-				$output .= '<time class="post-date" datetime="'. esc_attr(get_the_date('c', $post)) .'">'. esc_attr(get_the_date('', $post)) .'</time>'; // Display the post date
-			}
-			
-			if ($excerpt) {
-				$output .= '<div class="post-excerpt">' . $excerpt . '</div>'; // Display the post excerpt
-			}
-			
+				if ($thumbnail && $display_image) {
+					$output .= '<div class="post-thumbnail">' . $thumbnail . '</div>'; // Display the thumbnail
+				}
+				
+				$output .= '<div class="post-content">';
+					if ($title) {
+						$output .= '<h3>' . $title . '</h3>';
+					}
+					
+					if ($date) {
+						$output .= '<p class="post-date"><time datetime="'. esc_attr(get_the_date('c', $post)) .'">'. esc_attr(get_the_date('', $post)) .'</time></p>'; // Display the post date
+					}
+					
+					if ($excerpt) {
+						$output .= '<div class="post-excerpt">' . $excerpt . '</div>'; // Display the post excerpt
+					}
+				
+				$output .= '</div>';
 			$output .= '</a>';
 			$output .= '</li>';
 		}
