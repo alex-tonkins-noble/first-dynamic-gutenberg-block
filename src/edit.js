@@ -26,7 +26,11 @@ export default function Edit({ attributes, setAttributes }) {
 		numberOfColumns,
 		order,
 		orderBy,
+		categories,
 	} = attributes;
+
+	// Get all Category IDs for use within the getEntityRecords
+	const categoryIDs = categories ? categories.map((cat) => cat.id) : [];
 
 	// The _embed parameter is CRUCIAL here. It will allow getEntityRecords to pass through content in an _embedded object for us to use. (EG - featuredImage)
 	const args = {
@@ -35,6 +39,7 @@ export default function Edit({ attributes, setAttributes }) {
 		_embed: true,
 		order,
 		orderby: orderBy,
+		categories: categoryIDs,
 	};
 
 	// use getEntityRecords from the 'core' data store to retrieve post data specified via the args variable.
@@ -43,11 +48,47 @@ export default function Edit({ attributes, setAttributes }) {
 			const { getEntityRecords } = select('core');
 			return getEntityRecords('postType', 'post', args);
 		},
-		[numberOfPosts, order, orderBy]
+		[numberOfPosts, order, orderBy, categories]
 	);
 
-	console.log(order);
-	console.log(orderBy);
+	// Fetch the list of available categories
+	const allCategories = useSelect((select) => {
+		const { getEntityRecords } = select('core');
+		return getEntityRecords('taxonomy', 'category', {
+			per_page: -1,
+		});
+	}, []);
+
+	// TODO - explain this
+	const categoriesObjectForCatSuggestions = {};
+	if (allCategories) {
+		for (let i = 0; i < allCategories.length; i++) {
+			const category = allCategories[i];
+
+			categoriesObjectForCatSuggestions[category.name] = category;
+		}
+	}
+
+	// The Values parameter will take on the categoriesObjectForCatSuggestions variable, as well as any newly added Categories
+	const onCategoryChange = (values) => {
+		// Loop through each of the updated values, check if any of them are a string AND if they do not already exist - if so then there will be no suggestions and we do not want to add it.
+		const hasNoSuggestions = values.some(
+			(value) =>
+				typeof value === 'string' &&
+				!categoriesObjectForCatSuggestions[value]
+		);
+
+		if (hasNoSuggestions) return;
+
+		// Else if the string DOES exist as a Category, then we need to convert it to the corresponding object within the array
+		const updatedCategories = values.map((value) => {
+			return typeof value === 'string'
+				? categoriesObjectForCatSuggestions[value]
+				: value;
+		});
+
+		setAttributes({ categories: updatedCategories });
+	};
 
 	return (
 		<div {...useBlockProps()}>
@@ -77,7 +118,7 @@ export default function Edit({ attributes, setAttributes }) {
 						}
 					/>
 
-					{/* This updates the posts absolutely fine, but the wording does not update... weird. */}
+					{/* This updates the posts absolutely fine, but the Select Value does not update... weird. */}
 					<QueryControls
 						numberOfItems={numberOfPosts}
 						onNumberOfItemsChange={(newNumber) =>
@@ -93,6 +134,9 @@ export default function Edit({ attributes, setAttributes }) {
 						onOrderChange={(newOrder) =>
 							setAttributes({ order: newOrder })
 						}
+						categorySuggestions={categoriesObjectForCatSuggestions}
+						selectedCategories={categories}
+						onCategoryChange={onCategoryChange}
 					/>
 				</PanelBody>
 			</InspectorControls>
@@ -116,7 +160,6 @@ export default function Edit({ attributes, setAttributes }) {
 								<a href={post.link}>
 									{displayFeaturedImage && featuredImg && (
 										<div className="post-thumbnail">
-											<p>asdas fasfa sfasfa</p>
 											<img
 												src={
 													featuredImg.media_details

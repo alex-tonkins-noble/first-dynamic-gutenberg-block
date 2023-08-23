@@ -27,6 +27,7 @@ function blocks_course_render_frontend($attributes) {
 	$number_of_posts = $attributes['numberOfPosts'];
 	$order_of_posts = $attributes['order'];
 	$orderby = $attributes['orderBy'];
+	$categories = $attributes['categories'];
 
 	$display_image = $attributes['displayFeaturedImage'];
 	$number_of_columns = $attributes['numberOfColumns'];
@@ -35,8 +36,13 @@ function blocks_course_render_frontend($attributes) {
 		'posts_per_page' => $number_of_posts,
 		'post_status' => 'publish',
 		'order' => $order_of_posts,
-		'orderby' => $orderby
+		'orderby' => $orderby,
 	];
+
+	if ($categories) {
+		// array_column returns an array of ONLY one key. So here we only need the IDs.
+		$query_args['category__in'] = array_column($categories, 'id');
+	};
 
 	$query = new WP_Query($query_args);
 	$posts = $query->posts;
